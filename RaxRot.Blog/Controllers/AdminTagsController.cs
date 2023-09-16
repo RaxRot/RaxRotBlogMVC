@@ -3,22 +3,24 @@ using Microsoft.EntityFrameworkCore;
 using RaxRot.Blog.Data;
 using RaxRot.Blog.Models.Domain;
 using RaxRot.Blog.Models.ViewModels;
+using RaxRot.Blog.Repositories;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace RaxRot.Blog.Controllers
 {
     public class AdminTagsController : Controller
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ITagRepository _tagRepository;
 
-        public AdminTagsController(ApplicationDbContext dbContext)
+        public AdminTagsController(ITagRepository tagRepository)
         {
-            _dbContext = dbContext;
+            _tagRepository = tagRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> List()
         {
-            var allTags= await _dbContext.Tags.ToListAsync();
+            var allTags = await _tagRepository.GetAllAsync();
             return View(allTags);
         }
 
@@ -38,8 +40,7 @@ namespace RaxRot.Blog.Controllers
             };
 
 
-            await _dbContext.Tags.AddAsync(tag);
-            await _dbContext.SaveChangesAsync();
+            await _tagRepository.AddAsync(tag);
 
 
             return RedirectToAction("List");
@@ -47,8 +48,8 @@ namespace RaxRot.Blog.Controllers
 
         public async Task<IActionResult> Edit(Guid id)
         {
-            var tag=await _dbContext.Tags.FirstOrDefaultAsync(x => x.Id == id);
-            if (tag != null) 
+            var tag = await _tagRepository.GetAsync(id);
+            if (tag != null)
             {
                 var editTagRequest = new EditTagRequest()
                 {
@@ -62,9 +63,8 @@ namespace RaxRot.Blog.Controllers
 
             return View();
         }
-
-        [HttpPost,ActionName("Edit")]
-        public IActionResult UpdateTag(EditTagRequest editTagRequest)
+        [HttpPost, ActionName("Edit")]
+        public async Task<IActionResult> UpdateTag(EditTagRequest editTagRequest)
         {
             var tag = new Tag()
             {
@@ -73,26 +73,25 @@ namespace RaxRot.Blog.Controllers
                 DisplayName = editTagRequest.DisplayName
             };
 
-            var existingTag = _dbContext.Tags.Find(tag.Id);
-
-            if (existingTag != null)
+            var updatedTag = await _tagRepository.UpdateAsync(tag);
+            if (updatedTag != null)
             {
-                existingTag.Name = tag.Name;
-                existingTag.DisplayName = tag.DisplayName;
-
-
-                _dbContext.SaveChanges();
-
+                // Show success
                 return RedirectToAction("List");
             }
-
-            return View();
+            else
+            {
+                // Show error
+                ModelState.AddModelError("", "Tag not found or could not be updated.");
+                return View(editTagRequest); // Return to the edit view with the input values
+            }
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var tag = await _dbContext.Tags.FirstOrDefaultAsync(x => x.Id == id);
+            var tag = await _tagRepository.GetAsync(id);
             if (tag != null)
             {
                 var deleteTagRequest = new DeleteTagRequest()
@@ -108,16 +107,15 @@ namespace RaxRot.Blog.Controllers
             return View();
         }
 
-        [HttpPost,ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteTag(DeleteTagRequest deleteTagRequest)
         {
-            var tag= await _dbContext.Tags.FirstOrDefaultAsync(x=>x.Id==deleteTagRequest.Id);
-            if(tag != null)
-            {
-                _dbContext.Remove(tag);
-                _dbContext.SaveChanges();
 
-               return RedirectToAction("List");
+            var deletedTag = await _tagRepository.DeleteAsync(deleteTagRequest.Id);
+            if (deletedTag != null)
+            {
+                //Success
+                return RedirectToAction("List");
             }
             return View();
         }
