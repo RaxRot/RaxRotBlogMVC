@@ -1,6 +1,8 @@
-﻿namespace RaxRot.Blog.Models.Domain
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace RaxRot.Blog.Models.ViewModels
 {
-    public class BlogPost
+    public class EditBlogPostRequest
     {
         public Guid Id { get; set; }
         public string Heading { get; set; }
@@ -12,6 +14,10 @@
         public DateTime PublishedDate { get; set; }
         public string Author { get; set; }
         public bool Visible { get; set; }
-        public ICollection<Tag> Tags { get; set; }
+
+        public IEnumerable<SelectListItem> Tags { get; set; }
+        public string[] SelectedTags { get; set; }=Array.Empty<string>();
+
+
     }
 }

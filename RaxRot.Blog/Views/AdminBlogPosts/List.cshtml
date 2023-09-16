@@ -1,0 +1,65 @@
+﻿
+@model List<RaxRot.Blog.Models.Domain.BlogPost>;
+
+<div class="bg-secondary bg-opacity-10 py-2">
+    <div class="container">
+        <h1>All BlogPosts - Admin Functionality</h1>
+    </div>
+</div>
+
+<div class="container py-5">
+    @if (Model != null && Model.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>Id</td>
+                    <td>Heading</td>
+                    <td>Tags</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var blogPosts in Model)
+                {
+                    <tr>
+                        <td>@blogPosts.Id</td>
+                        <td>@blogPosts.Heading</td>
+                        <td>
+                            <div class="d-flex">
+                                @foreach (var tags in blogPosts.Tags)
+                                {
+                                    <span class="badge bg-secondary me-1">
+                                        @tags.Name
+                                    </span>
+                                }
+                            </div>
+                        </td>
+                        <td>
+
+                            <div class="w-75 btn-group" role="group">
+
+                                <a asp-controller="AdminBlogPosts" asp-action="Edit" asp-route-id="@blogPosts.Id" class="btn btn-primary mx-2">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+
+                                <a asp-controller="AdminBlogPosts" asp-action="Delete" asp-route-id="@blogPosts.Id" class="btn btn-danger mx-2">
+                                    <i class="bi bi-trash3-fill"></i> Delete
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No Blogs</p>
+    }
+
+
+</div>
