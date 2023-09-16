@@ -1,0 +1,54 @@
+﻿
+@model List<RaxRot.Blog.Models.Domain.Tag>;
+
+
+<div class="bg-secondary bg-opacity-10 py-2">
+<div class="container">
+    <h1>Show All Tags - Admin Functionality</h1>
+</div>
+</div>
+
+<div class="container py-5">
+    @if(Model!=null && Model.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Display Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var tag in Model){
+                 <tr>
+                     <td>@tag.Id</td>
+                     <td>@tag.Name</td>
+                     <td>@tag.DisplayName</td>
+                     <td>
+                            <div class="w-75 btn-group" role="group">
+
+                                <a asp-controller="AdminTags" asp-action="Edit" asp-route-id="@tag.Id" class="btn btn-primary mx-2">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+
+                                <a asp-controller="AdminTags" asp-action="Delete" asp-route-id="@tag.Id" class="btn btn-danger mx-2">
+                                    <i class="bi bi-trash3-fill"></i> Delete
+                                </a>
+
+                            </div>
+                     </td>
+                 </tr>   
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+      <p>No tags found!</p>  
+    }
+</div>
+
+
+
