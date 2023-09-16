@@ -47,6 +47,13 @@ namespace RaxRot.Blog.Repositories
           return await _dbContext.Posts.Include(x=>x.Tags).FirstOrDefaultAsync(x=>x.Id==id);
         }
 
+        public async Task<BlogPost?> GetByUrlAsync(string urlHandle)
+        {
+           return await _dbContext.Posts.Include(t=>t.Tags)
+                .FirstOrDefaultAsync(x=>x.UrlHandle==urlHandle);
+
+        }
+
         public async Task<BlogPost?> UpdateAsync(BlogPost blogPost)
         {
            var existingBlog = await _dbContext.Posts.Include(x=>x.Tags).
