@@ -3,9 +3,11 @@ using RaxRot.Blog.Models.ViewModels;
 using RaxRot.Blog.Repositories;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RaxRot.Blog.Models.Domain;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RaxRot.Blog.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminBlogPostsController : Controller
     {
         private ITagRepository _tagRepository;

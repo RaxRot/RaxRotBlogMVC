@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaxRot.Blog.Data;
 using RaxRot.Blog.Models.Domain;
@@ -8,6 +9,7 @@ using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace RaxRot.Blog.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminTagsController : Controller
     {
         private readonly ITagRepository _tagRepository;
