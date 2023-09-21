@@ -35,6 +35,11 @@ namespace RaxRot.Blog.Controllers
         [HttpPost, ActionName("Add")]
         public async Task<IActionResult> AddTag(AddTagRequest addTagRequest)
         {
+            if(!ModelState.IsValid)
+            {
+                return View();
+            }
+
             var tag = new Tag()
             {
                 Name = addTagRequest.Name,
