@@ -44,7 +44,7 @@ namespace RaxRot.Blog.Controllers
                     {
                         //Show success
 
-                        return RedirectToAction("Register");
+                        return RedirectToAction("Login");
                     }
                 }
             }
